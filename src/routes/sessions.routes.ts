@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import CreateUserSession from '../services/CreateUserSessionService';
+import CreateUserSession from '../services/AuthenticateUserService';
 const sessionRouter = Router();
 
 sessionRouter.post('/', async (request, response) => {

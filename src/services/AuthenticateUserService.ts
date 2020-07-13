@@ -3,6 +3,7 @@ import { getRepository } from 'typeorm';
 import { compare } from 'bcryptjs';
 import { sign } from 'jsonwebtoken';
 import authConfig from '../config/auth';
+import AppErrors from '../errors/AppError';
 
 interface Request {
     password: string;
@@ -19,13 +20,13 @@ class AuthenticateUserService {
         });
 
         if (!user) {
-            throw new Error('Invalid Email/Password');
+            throw new AppErrors('Invalid Email/Password', 401);
         };
 
         const PasswordOk = await compare(password, user.password);
 
         if (!PasswordOk) {
-            throw new Error('Invalid Email/Password');
+            throw new AppErrors('Invalid Email/Password',401);
         };
        
         const {secret, expiresIn} = authConfig.jwt;

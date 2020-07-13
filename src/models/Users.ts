@@ -20,6 +20,10 @@ class Users {
 
     @UpdateDateColumn()
     updated_at: Date;
+
+    @Column()
+    avatar: string;
+
 }
 
 export default Users;

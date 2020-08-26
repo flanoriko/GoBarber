@@ -1,9 +1,7 @@
-import pathFile from '@config/upload';
 import User from '@modules/users/infra/typeorm/entities/Users';
-import fs from 'fs';
-import path from 'path';
 import { injectable, inject } from 'tsyringe';
 
+import IStoragePRovider from '@shared/container/provider/StorageProvider/models/IStorageProvider';
 import AppErrors from '@shared/errors/AppError';
 
 import IUsersRepository from '../repositories/IUserRepository';
@@ -17,6 +15,8 @@ class UpdateAvatarService {
   constructor(
     @inject('UsersRepository')
     private usersRepository: IUsersRepository,
+    @inject('StorageProvider')
+    private storageProvider: IStoragePRovider,
   ) {}
 
   public async execute({ user_id, avatarFilename }: IRequest): Promise<User> {
@@ -28,15 +28,11 @@ class UpdateAvatarService {
     }
 
     if (user.avatar) {
-      const userAvatarFilePath = path.join(pathFile.directory, user.avatar);
-      const userAvatarExists = await fs.promises.stat(userAvatarFilePath); // ve status
-
-      if (userAvatarExists) {
-        await fs.promises.unlink(userAvatarFilePath);
-      }
+      await this.storageProvider.deleteFile(user.avatar);
     }
+    const filename = await this.storageProvider.saveFile(avatarFilename);
 
-    user.avatar = avatarFilename;
+    user.avatar = filename;
     await this.usersRepository.save(user); // se o usuario ja está no banco, ele atualiza
 
     return user;

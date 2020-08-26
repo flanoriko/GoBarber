@@ -1,11 +1,11 @@
 import authConfig from '@config/auth';
-import { compare } from 'bcryptjs';
 import { sign } from 'jsonwebtoken';
 import { injectable, inject } from 'tsyringe';
 
 import AppErrors from '@shared/errors/AppError';
 
 import User from '../infra/typeorm/entities/Users';
+import IHashProvider from '../providers/HashProvider/models/IHashProvider';
 import IUsersRepository from '../repositories/IUserRepository';
 
 interface Request {
@@ -17,6 +17,8 @@ class AuthenticateUserService {
   constructor(
     @inject('UsersRepository')
     private usersRepository: IUsersRepository,
+    @inject('HashProvider')
+    private hashProvider: IHashProvider,
   ) {}
 
   public async execute({
@@ -29,7 +31,10 @@ class AuthenticateUserService {
       throw new AppErrors('Invalid Email/Password', 401);
     }
 
-    const PasswordOk = await compare(password, user.password);
+    const PasswordOk = await this.hashProvider.compareHash(
+      password,
+      user.password,
+    );
 
     if (!PasswordOk) {
       throw new AppErrors('Invalid Email/Password', 401);

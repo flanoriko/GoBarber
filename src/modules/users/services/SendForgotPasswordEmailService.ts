@@ -1,12 +1,11 @@
+import path from 'path';
 import { injectable, inject } from 'tsyringe';
 
 import IMailProvider from '@shared/container/provider/MailProvider/models/IMailProvider';
-import AppErrors from '@shared/errors/AppError';
 import AppError from '@shared/errors/AppError';
 
-import User from '../infra/typeorm/entities/Users';
 import IUsersRepository from '../repositories/IUserRepository';
-import IUsersTokenRepository from '../repositories/IUserTokensRepository';
+import IUserTokenRepository from '../repositories/IUserTokensRepository';
 
 interface IRequest {
   email: string;
@@ -19,8 +18,8 @@ class SendForgotPasswordEmailService {
     private usersRepository: IUsersRepository,
     @inject('MailProvider')
     private mailProvider: IMailProvider,
-    @inject('UsersTokenRepository')
-    private tokensRepository: IUsersTokenRepository,
+    @inject('UserTokensRepository')
+    private tokensRepository: IUserTokenRepository,
   ) {}
 
   public async execute(data: IRequest): Promise<void> {
@@ -28,8 +27,27 @@ class SendForgotPasswordEmailService {
     if (!user) {
       throw new AppError('User does not exists');
     }
-    await this.tokensRepository.generate(user.id);
-    this.mailProvider.sendMail(data.email, 'Pedido de recuperação de senha');
+    const { token } = await this.tokensRepository.generate(user.id);
+    const forgotPasswordTemplate = path.resolve(
+      __dirname,
+      '..',
+      'views',
+      'forgot_password.hbs',
+    );
+    await this.mailProvider.sendMail({
+      to: {
+        name: user.name,
+        email: user.email,
+      },
+      subject: '[Gobarber] Pedido de recuperação de senha',
+      templateData: {
+        file: forgotPasswordTemplate,
+        variables: {
+          name: user.name,
+          link: `http://localhost:3000/reset_password?token=${token}`,
+        },
+      },
+    });
   }
 }
 

@@ -1,4 +1,4 @@
-import UpdateUserAvatarService from '@modules/users/services/UploadUserAvatarService';
+import UpdateUserAvatarService from '@modules/users/services/UpdateUserAvatarService';
 import { Request, Response } from 'express';
 import { container } from 'tsyringe';
 // index, show, create, update, delete

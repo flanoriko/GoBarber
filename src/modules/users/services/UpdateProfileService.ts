@@ -3,7 +3,6 @@ import { injectable, inject } from 'tsyringe';
 
 import AppErrors from '@shared/errors/AppError';
 
-import passwordRouter from '../infra/http/routes/password.routes';
 import IHashProvider from '../providers/HashProvider/models/IHashProvider';
 import IUsersRepository from '../repositories/IUserRepository';
 

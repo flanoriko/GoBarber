@@ -1,19 +1,18 @@
 import AppError from '@shared/errors/AppError';
 
-import userRouter from '../infra/http/routes/users.routes';
 import FakeHashProvider from '../providers/HashProvider/fakes/FakeHashProvider';
 import FakeUsersRepository from '../repositories/fakes/FakeUsersRepository';
-import UpdateProfile from './UpdateProfileService';
+import UpdateProfileService from './UpdateProfileService';
 
 let fakeUsersRepository: FakeUsersRepository;
 let fakeHashProvider: FakeHashProvider;
-let updateProfileService: UpdateProfile;
+let updateProfileService: UpdateProfileService;
 
 describe('UpdateProfile', () => {
   beforeEach(() => {
     fakeUsersRepository = new FakeUsersRepository();
     fakeHashProvider = new FakeHashProvider();
-    updateProfileService = new UpdateProfile(
+    updateProfileService = new UpdateProfileService(
       fakeUsersRepository,
       fakeHashProvider,
     );
@@ -122,5 +121,16 @@ describe('UpdateProfile', () => {
       // password: (await user).password,
     });
     expect(updatedUser.password).toBe('3333');
+  });
+
+  it('should not be able to update the profile from non-existing user', async () => {
+    expect(
+      updateProfileService.execute({
+        user_id: 'non-existent id',
+        name: 'Flavia',
+        password: '123',
+        email: 'flavia@gmail.com',
+      }),
+    ).rejects.toBeInstanceOf(AppError);
   });
 });

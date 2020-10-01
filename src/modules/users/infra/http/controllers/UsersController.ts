@@ -13,7 +13,7 @@ export default class SessionsController {
         password,
         email,
       });
-      delete userCreated.password;
+      // delete userCreated.password;
       return response.json(userCreated); // json({userCreated});
     } catch (err) {
       return response.status(400).json({ error: err.message });

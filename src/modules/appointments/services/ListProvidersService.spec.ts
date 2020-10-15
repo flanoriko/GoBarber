@@ -9,6 +9,7 @@ let listProvidersService: ListProvidersService;
 describe('ListProvider', () => {
   beforeEach(() => {
     fakeUsersRepository = new FakeUsersRepository();
+    listProvidersService = new ListProvidersService(fakeUsersRepository);
   });
   // categorizando o tipo com o describe
   it('should be able to list providers', async () => {

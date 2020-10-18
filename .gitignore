@@ -2,9 +2,11 @@
 
 # dependencies
 node_modules/
+.env
 tmp/*
 !tmp/.gitkeep
 temp/
 .vscode/
 .idea/
 coverage/*
+ormconfig.json

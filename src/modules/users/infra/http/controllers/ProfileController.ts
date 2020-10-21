@@ -1,5 +1,6 @@
 import showProfileService from '@modules/users/services/ShowProfileService';
 import updateProfileService from '@modules/users/services/UpdateProfileService';
+import { classToClass } from 'class-transformer';
 import { Request, Response } from 'express';
 import { container } from 'tsyringe';
 
@@ -8,8 +9,7 @@ export default class ProFileController {
     const user_id = request.user.id;
     const showProfile = container.resolve(showProfileService);
     const user = await showProfile.execute({ user_id });
-    delete user.password;
-    return response.json(user);
+    return response.json(classToClass(user));
   }
 
   public async update(request: Request, response: Response): Promise<Response> {
@@ -25,7 +25,6 @@ export default class ProFileController {
       password,
     });
     console.log(user);
-    delete user.password;
-    return response.json(user);
+    return response.json(classToClass(user));
   }
 }

@@ -1,4 +1,4 @@
-import configMulter from '@config/upload';
+import uploadConfig from '@config/upload';
 import ensureAuthentication from '@modules/users/infra/http/middleware/ensureAuth';
 import { celebrate, Segments, Joi } from 'celebrate';
 import { Router } from 'express';
@@ -9,7 +9,7 @@ import UsersController from '../controllers/UsersController';
 
 const userRouter = Router();
 
-const upload = multer(configMulter);
+const upload = multer(uploadConfig.multer);
 const userAvatarController = new UserAvatarController();
 const usersController = new UsersController();
 userRouter.post(

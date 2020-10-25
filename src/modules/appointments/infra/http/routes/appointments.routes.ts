@@ -9,7 +9,7 @@ const appointmentsRouter = Router();
 const appointmentsController = new AppointmentsController();
 const providerAppointmentsController = new ProviderAppointmentsController();
 
-appointmentsRouter.use(ensureAuthentication);
+// appointmentsRouter.use(ensureAuthentication);
 appointmentsRouter.post(
   '/',
   celebrate({

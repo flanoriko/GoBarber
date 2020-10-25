@@ -41,7 +41,13 @@ class AuthenticateUserService {
     }
 
     const { secret, expiresIn } = authConfig.jwt;
+    // let lsecret = '123';
 
+    // if (!secret) {
+    //   lsecret = '123';
+    // } else {
+    //   lsecret = secret;
+    // }
     const token = sign({}, secret, {
       subject: user.id,
       expiresIn,
